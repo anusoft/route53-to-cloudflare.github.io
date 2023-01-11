@@ -50,16 +50,28 @@ export default function Home() {
 
       let headers = csvData[0].split(',');
 
-      if (headers.length != 3){
+
+      if (headers.length < 3){
         setErrorMessage('Invalid CSV file');
         return;
       }
 
+
       let resultBindTXT = '';
       let records = 0;
 
+
+      // dkim-dns-records >>> Type,Name,Value
+      // DNS_Configuration >>> Domain Name,Record Name,Record Type,Record Value
+
       for (let i=1; i < csvData.length; i++) {
-        let [rowType , rowName, rowValue] = csvData[i].split(',');
+        let domainName, rowType , rowName, rowValue;
+        if (headers.length == 3) {
+          [rowType , rowName, rowValue] = csvData[i].split(',');
+        } else {
+          [domainName, rowName, rowType , rowValue] = csvData[i].split(',');
+
+        }
 
         if (rowType !== 'A' && rowType !== 'CNAME') {
           setErrorMessage('Invalid CSV file');
